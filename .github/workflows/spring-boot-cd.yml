@@ -31,4 +31,4 @@ jobs:
       env:
         HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
       run: |
-        heroku deploy:jar build/libs/*.jar --app your-heroku-app
+        heroku deploy:jar build/libs/*.jar --app your-heroku-apps
