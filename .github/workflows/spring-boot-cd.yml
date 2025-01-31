@@ -9,27 +9,51 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    # Step 1: Check out the code from GitHub
     - name: Checkout code
       uses: actions/checkout@v3
 
+    # Step 2: Set up Java
     - name: Set up JDK
       uses: actions/setup-java@v3
       with:
         java-version: '17'
         distribution: 'temurin'
 
+    # Step 3: Test and Build the application
     - name: Test and Build
       run: |
         ./gradlew test
         ./gradlew bootJar
-    
+
+    # Step 4: Install Heroku CLI
     - name: Install Heroku CLI
       run: |
         curl https://cli-assets.heroku.com/install.sh | sh
-        heroku plugins:install @heroku-cli/plugin-deploy
 
-    - name: Deploy to Heroku
+    # Step 5: Authenticate with Heroku
+    - name: Heroku Login
       env:
         HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
       run: |
-        heroku deploy:jar build/libs/*.jar --app your-heroku-apps
+        echo "$HEROKU_API_KEY" | heroku login --interactive
+
+    # Step 6: Deploy to Heroku using Git
+    - name: Deploy via Git
+      env:
+        HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+      run: |
+        # Initialize a git repo (if not already there)
+        git init
+
+        # Add the Heroku remote
+        heroku git:remote -a your-heroku-app
+
+        # Commit the latest build artifacts (JAR, Procfile, etc.)
+        # Since you already have code checked out from GitHub,
+        # there might be an existing .git folder. Just ensure it's up to date:
+        git add .
+        git commit -m "Heroku deploy"
+
+        # Push code to Heroku
+        git push heroku HEAD:main -f
