@@ -27,12 +27,6 @@ jobs:
       run: |
         curl https://cli-assets.heroku.com/install.sh | sh
 
-    - name: Authenticate with Heroku
-      env:
-        HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-      run: |
-        heroku auth:token
-
     - name: Deploy to Heroku using Git
       env:
         HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
@@ -41,7 +35,7 @@ jobs:
         git config --global user.email "alam.imran21510@gmail.com"
         git config --global user.name "GitHub Actions"
         git fetch --all --unshallow || echo "Repository is already full clone"
-        git remote add heroku https://heroku:${HEROKU_API_KEY}@git.heroku.com/your-heroku-app.git
+        git remote add heroku https://heroku:${HEROKU_API_KEY}@git.heroku.com/my-library-app.git
         git checkout main
         git push heroku HEAD:main -f
      
