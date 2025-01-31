@@ -26,11 +26,10 @@ jobs:
     - name: Install Heroku CLI
       run: |
         curl https://cli-assets.heroku.com/install.sh | sh
+        heroku plugins:install @heroku-cli/plugin-deploy
 
     - name: Deploy to Heroku
       env:
         HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
       run: |
-        heroku git:remote -a your-heroku-app
-        git push heroku main
-        heroku ps:restart --app your-heroku-app
+        heroku deploy:jar build/libs/*.jar --app your-heroku-apps
